@@ -1,6 +1,10 @@
 import './App.css'
+import { useState } from 'react';
 import TicketList from './components/TicketList'
 import { mockTickets } from './data/tickets'
+import type { TicketStatus } from './types/ticket'
+
+type StatusFilter = "ALL" | TicketStatus;
 
 function App() {
 
@@ -18,6 +22,12 @@ function App() {
     (ticket) => ticket.status === 'RESOLVED'
   ).length;
 
+
+  const [selectedStatus, setSelectedStatus] = useState<StatusFilter>("ALL");
+
+  const filteredTickets = (selectedStatus === "ALL") ? mockTickets :
+    mockTickets.filter((ticket) => ticket.status === selectedStatus);
+
   return (
     <main>
       <h1>ResolveHub</h1>
@@ -26,8 +36,14 @@ function App() {
       <p>InProgress Tickets: {inProgressTickets}</p>
       <p>Resolved Tickets: {resolvedTickets}</p>
       <section id="center">
-        <TicketList tickets={mockTickets} />
+        <h2>Filter Tickets</h2>
+        <button onClick={() => { setSelectedStatus("ALL") }}>All </button>
+        <button onClick={() => { setSelectedStatus("OPEN") }}>Open </button>
+        <button onClick={() => { setSelectedStatus("IN_PROGRESS") }}>In Progress </button>
+        <button onClick={() => { setSelectedStatus("RESOLVED") }}>Resolved </button>
+        <p>Selected Status- {selectedStatus}</p>
       </section>
+      <TicketList tickets={filteredTickets} />
     </main>
   )
 }
